@@ -1,0 +1,8 @@
+services:
+  - type: web
+    name: wisp
+    runtime: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npx wisp-js-server -H 0.0.0.0 -P $PORT
+    autoDeploy: true
