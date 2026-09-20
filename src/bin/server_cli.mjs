@@ -86,22 +86,17 @@ const server = http.createServer(async (req, res) => {
     res.writeHead(200, { "Content-Type": "text/plain; charset=utf-8" });
 
     const ascii_art = `
-              ___           __ _          _    ___
-              / __|_ _ __ _ / _| |_ ___ __| |  / __|__ _ _ __  ___
-             | (__| '_/ _' |  _|  _/ -_| _' | | (_ / _' | '  \| /
-              \___|_| \__,_|_| |__|_|___|___|_,_|  \___\__,_|_|_|_/__|
-
       ┌══════════════════════════════════════════════════════════════════┐
-      |    Version 15: © Crafted Gamz 2023-2027 All Rights Reserved.     |
+      |         © Plutonium Network 2026-2027 All Rights Reserved.       |
       └══════════════════════════════════════════════════════════════════┘
 
                     ┌─────────────────────────────────┐
-                    │   CRAFTED GAMZ: WISP LICENSE    │
+                    │ Plutonium Network: WISP LICENSE │
                     └─────────────────────────────────┘
 
  ┌────────────────────────────────────────────────────────────────────────────┐
  |This software and associated infrastructure ("the Software") is provided by |
- |                 Crafted Gamz under the following terms:                    |
+ |                 Plutonium Network under the following terms:               |
  └────────────────────────────────────────────────────────────────────────────┘
 
  ┌─ 1. PERMITTED USE ─────────────────────────────────────────────────────────┐
@@ -114,31 +109,25 @@ const server = http.createServer(async (req, res) => {
  │ You may not use the Software to serve live, production traffic or in any   |
  │ environment where real end-users depend on it for active, operational      |
  │ services. Any such use is expressly prohibited without prior written       |
- │ authorization from Crafted Gamz.                                           |
+ │ authorization from Plutonium Network.                                      |
  └────────────────────────────────────────────────────────────────────────────┘
 
- ┌─ 3. ECLIPSE SUITE ─────────────────────────────────────────────────────────┐
- │ Members of the Eclipse Suite are granted unlimited, unrestrained access    |
- │ to the Software with no additional restrictions beyond applicable law.     |
- │ Eclipse Suite membership is determined solely by Crafted Gamz.             |
- └────────────────────────────────────────────────────────────────────────────┘
-
- ┌─ 4. THIRD-PARTY ACKNOWLEDGMENT ────────────────────────────────────────────┐
+ ┌─ 3. THIRD-PARTY ACKNOWLEDGMENT ────────────────────────────────────────────┐
  │ This Software implements the Wisp protocol, developed by Mercury Workshop. |
  │ Credit is given to Mercury Workshop for their work on the Wisp protocol    |
  │ specification. This license does not supersede any rights held by          |
  │ Mercury Workshop over the Wisp protocol itself.                            |
  └────────────────────────────────────────────────────────────────────────────┘
 
- ┌─ 5. NO WARRANTY ───────────────────────────────────────────────────────────┐
- │ CRAFTED GAMZ MAKES NO REPRESENTATIONS AND EXTENDS NO WARRANTIES OF ANY     |
+ ┌─ 4. NO WARRANTY ───────────────────────────────────────────────────────────┐
+ │ Plutonium Network MAKES NO REPRESENTATIONS AND EXTENDS NO WARRANTIES OF ANY|
  │ KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO WARRANTIES   |
  │ OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND VALIDITY OF      |
  │ PATENT RIGHTS CLAIMS, ISSUED OR PENDING.                                   |
  └────────────────────────────────────────────────────────────────────────────┘
 
- ┌─ 6. RESERVATION OF RIGHTS ─────────────────────────────────────────────────┐
- │ All rights not expressly granted herein are reserved by Crafted Gamz.      |
+ ┌─ 5. RESERVATION OF RIGHTS ─────────────────────────────────────────────────┐
+ │ All rights not expressly granted herein are reserved by Plutonium Network. |
  │ Unauthorized reproduction, distribution, or commercial use of the          |
  │ Software is strictly prohibited.                                           |
  └────────────────────────────────────────────────────────────────────────────┘
@@ -146,8 +135,8 @@ const server = http.createServer(async (req, res) => {
 
     res.end(
       region
-        ? `Crafted's Wisp v${version} is online and serving the ${region} region.\n${ascii_art}`
-        : `Crafted's Wisp v${version} is online.\n${ascii_art}`
+        ? `Plutonium Network's Wisp v${version} is online and serving the ${region} region.\n${ascii_art}`
+        : `Plutonium Network's Wisp v${version} is online.\n${ascii_art}`
     );
 
     return;
