@@ -4,5 +4,5 @@ services:
     runtime: node
     plan: free
     buildCommand: npm install
-    startCommand: npx wisp-js-server -H 0.0.0.0 -P $PORT
+    startCommand: node ./src/bin/server_cli.mjs -H 0.0.0.0 -P $PORT
     autoDeploy: true
