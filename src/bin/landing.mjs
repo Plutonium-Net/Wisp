@@ -282,7 +282,7 @@ export function landingPage() {
 
   <section class="card card--desc">
     <p class="card__desc">
-    Plutonium Wisp is the network gateway for our browser-facing proxy services. It tunnels <strong>TCP and UDP</strong> streams from the browser over a single WebSocket, speaking the Wisp protocol written by Mercury Workshop, and applies the server's own stream, port and hostname policy to every connection before it reaches the open network. One endpoint, no per-host configuration, so the proxies in front of it stay fast and the network behind it stays controlled.
+    Plutonium Wisp is the network gateway for our browser-facing proxy services. It tunnels <strong>TCP and UDP</strong> streams over a single WebSocket, speaking the Wisp protocol written by Mercury Workshop, and applies the server's own stream, port and hostname policy to every connection before it reaches the open network.
     </p>
   </section>
 </main>
