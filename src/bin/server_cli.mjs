@@ -3,14 +3,21 @@
 import http from "node:http";
 import path from "node:path";
 import { promises as fs } from "fs";
+import { fileURLToPath } from "node:url";
 
 import { server as wisp, logging, extensions } from "@mercuryworkshop/wisp-js/server";
 import { createRequire } from "module";
 import { Command } from "commander";
 
+import { landingPage } from "./landing.mjs";
+
 const package_json = createRequire(import.meta.url)("./../../package.json");
 const version = package_json.version;
 const region = process.env.LOCATION?.trim();
+
+// The brand artwork sits beside package.json. Resolving it from this module
+// rather than process.cwd() keeps it working under any start directory.
+const package_root = fileURLToPath(new URL("../..", import.meta.url));
 
 const program = new Command();
 program
@@ -77,12 +84,115 @@ const mime_types = {
   "ttf": "application/x-font-ttf"
 };
 
+// Brand artwork for the index page, served from disk rather than inlined into
+// the page: background.png alone is 414 KB.
+const assets = {
+  "/background.png": "background.png",
+  "/logo.png": "logo.png",
+  "/favicon.png": "favicon.png"
+};
+
+async function serve_asset(res, name) {
+  try {
+    let data = await fs.readFile(path.join(package_root, name));
+    res.writeHead(200, {
+      "Content-Type": mime_types.png,
+      "Content-Length": data.length,
+      "Cache-Control": "public, max-age=86400"
+    });
+    res.end(data);
+  }
+
+  catch (err) {
+    logging.error(`Could not serve brand asset ${name}: ${err.message}`);
+    res.writeHead(404, { "Content-Type": "text/plain; charset=utf-8" });
+    res.end("404 not found");
+  }
+}
+
+async function can_read(target) {
+  try {
+    await fs.access(target);
+    return true;
+  }
+
+  catch {
+    return false;
+  }
+}
+
+async function assets_present() {
+  let checks = await Promise.all(
+    Object.values(assets).map((name) => can_read(path.join(package_root, name)))
+  );
+  return checks.every(Boolean);
+}
+
+// One row per subsystem the index page claims to know about. The page itself
+// only reads name/ok; detail is there for anyone curling /healthz directly.
+async function serve_health(res) {
+  let components = [
+    { name: "http", ok: true, detail: `wisp-js v${version}` },
+    { name: "wisp", ok: server.listening, detail: `protocol v${wisp.options.wisp_version}` },
+    { name: "assets", ok: await assets_present(), detail: "brand artwork" }
+  ];
+
+  if (opts.static)
+    components.push({ name: "static", ok: await can_read(opts.static), detail: "static directory" });
+
+  let body = {
+    status: components.every((c) => c.ok) ? "ok" : "degraded",
+    version,
+    region: region || null,
+    components
+  };
+
+  res.writeHead(body.status === "ok" ? 200 : 503, {
+    "Content-Type": "application/json; charset=utf-8",
+    "Cache-Control": "no-store"
+  });
+  res.end(JSON.stringify(body, null, 2));
+}
+
 const server = http.createServer(async (req, res) => {
   let client_ip = req.socket.address().address;
   let real_ip = wisp.parse_real_ip(req.headers, client_ip);
   logging.info(`HTTP ${req.method} ${req.url} from ${real_ip}`);
 
+  let parsed_url = new URL(req.url, "http://localhost/");
+  let route = parsed_url.pathname;
+
   if (!opts.static) {
+    // "/" carries the brand splash; below it are the only endpoints that page
+    // asks for. /license keeps the notice the old plain-text root carried.
+    if (route === "/" || route === "/index.html") {
+      let html = landingPage();
+      res.writeHead(200, {
+        "Content-Type": "text/html; charset=utf-8",
+        "Content-Length": Buffer.byteLength(html),
+        "Cache-Control": "no-store"
+      });
+      res.end(html);
+      return;
+    }
+
+    if (route === "/healthz") {
+      await serve_health(res);
+      return;
+    }
+
+    let brand_asset = assets[route];
+    if (brand_asset) {
+      await serve_asset(res, brand_asset);
+      return;
+    }
+
+    if (route !== "/license") {
+      res.writeHead(404, { "Content-Type": "text/plain; charset=utf-8" });
+      res.end("404 not found");
+      return;
+    }
+
     res.writeHead(200, { "Content-Type": "text/plain; charset=utf-8" });
 
     const ascii_art = `
@@ -143,7 +253,6 @@ const server = http.createServer(async (req, res) => {
   }
 
   try {
-    let parsed_url = new URL(req.url, "http://localhost/");
     let served_path = path.join(opts.static, parsed_url.pathname);
 
     let path_stat = await fs.stat(served_path);

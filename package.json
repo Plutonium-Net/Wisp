@@ -35,7 +35,10 @@
   },
   "files": [
     "dist",
-    "src"
+    "src",
+    "background.png",
+    "favicon.png",
+    "logo.png"
   ],
   "scripts": {
     "start": "node ./src/bin/server_cli.mjs -H 0.0.0.0 -P $PORT",
